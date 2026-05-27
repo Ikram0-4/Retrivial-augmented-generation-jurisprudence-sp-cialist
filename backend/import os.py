@@ -8,10 +8,6 @@ from typing import List, Optional
 # Chargement des variables d'environnement
 load_dotenv()
 
-# =========================
-# Initialisations globales
-# =========================
-
 print("Chargement du modèle d'embedding...")
 
 embedding_model = SentenceTransformer(
@@ -32,11 +28,6 @@ mistral_client = Mistral(
 
 print("Initialisation terminée.\n")
 
-
-# =========================
-# Connexion à Pinecone
-# =========================
-
 def connexionIndex():
     """Connexion à l'index Pinecone"""
 
@@ -50,9 +41,7 @@ def connexionIndex():
     return pc.Index(index_name)
 
 
-# =========================
 # Embedding question
-# =========================
 
 def encodingQuerry(input_question: str) -> List[float]:
     """Encode la question utilisateur"""
@@ -61,14 +50,12 @@ def encodingQuerry(input_question: str) -> List[float]:
 
     query_embedding = embedding_model.encode(input_question)
 
-    print("✅ Encoding terminé.")
+    print("Encoding terminé.")
 
     return query_embedding
 
 
-# =========================
-# Recherche Pinecone
-# =========================
+
 
 def resultatsQuerry(index, query_embedding) -> Optional[str]:
     """Recherche des chunks pertinents"""
@@ -85,7 +72,7 @@ def resultatsQuerry(index, query_embedding) -> Optional[str]:
     matches = results.get("matches")
 
     if not matches:
-        print("❌ Aucun résultat trouvé.")
+        print("Aucun résultat trouvé.")
         return None
 
     retrieved_chunks = [
@@ -96,19 +83,18 @@ def resultatsQuerry(index, query_embedding) -> Optional[str]:
 
     contexte = "\n\n".join(retrieved_chunks)
 
-    print(f"✅ {len(retrieved_chunks)} chunks récupérés.")
+    print(f"{len(retrieved_chunks)} chunks récupérés.")
 
     return contexte
 
 
-# =========================
 # Réponse Mistral
-# =========================
+
 
 def reponseLLM(contexte: str, query: str) -> str:
     """Génération de réponse avec Mistral"""
 
-    print("🤖 Appel Mistral...")
+    print("Appel Mistral...")
 
     prompt_template = """
 Tu es un avocat chargé d'une affaire portée en cassation.
@@ -142,14 +128,10 @@ RÉPONSE :
 
     response = chat_response.choices[0].message.content
 
-    print("✅ Réponse générée.\n")
+    print("Réponse générée.\n")
 
     return response
 
-
-# =========================
-# Pipeline RAG
-# =========================
 
 def rag_pipeline(input_question: str) -> str:
 
@@ -174,13 +156,8 @@ def rag_pipeline(input_question: str) -> str:
         return response
 
     except Exception as e:
-        print(f"❌ Erreur : {e}")
+        print(f"Erreur : {e}")
         return "Une erreur est survenue."
-
-
-# =========================
-# Main
-# =========================
 
 if __name__ == "__main__":
 
@@ -198,6 +175,6 @@ if __name__ == "__main__":
 
         response = rag_pipeline(input_question)
 
-        print("\n📌 Réponse :")
+        print("\n Réponse :")
         print(response)
         print("\n" + "=" * 50 + "\n")
