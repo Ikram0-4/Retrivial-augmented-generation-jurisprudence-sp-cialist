@@ -43,11 +43,11 @@ def root():
 def ask_question(question: Question):
     print("Requête reçue:", question.question)
     input_question = question.question
-    print("⏳ Encoding...")
+    print("Encoding...")
     query_embedding = encodingQuerry(input_question)
-    print("⏳ Recherche Pinecone...")
+    print("Recherche Pinecone...")
     contexte = resultatsQuerry(index, query_embedding)
-    print("⏳ LLM...")
+    print("LLM...")
     if contexte == "Aucun contexte trouvé":
         return {"response": "Désolé, je n'ai trouvé aucune information pertinente."}
     response = reponseLLM(contexte, input_question)
